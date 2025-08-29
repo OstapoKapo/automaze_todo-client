@@ -14,13 +14,49 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #fff;
+    --foreground: #000;
   }
 }
 
-body {
+
+
+  ul, ol {
+    list-style: none;
+  }
+  
+  /* Скидання стилів для посилань */
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  /* Видалення стилів для кнопок */
+  button, input, textarea, select {
+    outline: none;
+    cursor: pointer;
+  }
+  
+  /* Уніфікація зображень */
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+  select{
+    color: #fff;
+  }
+  /* Скидання стилів для таблиць */
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+  
+  body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-montserrat);
+  width: 100%;
+  height: 100vh;
 }
+
+
