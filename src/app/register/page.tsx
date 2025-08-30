@@ -1,5 +1,8 @@
 import Link from "next/link"
 import AuthForm from "../components/ui/authForm/authForm"
+import { Toaster } from 'react-hot-toast';
+
+
 
 const RegisterPage = () => {
     return(
@@ -8,6 +11,7 @@ const RegisterPage = () => {
       <Link href="/">
         <p className="text-white cursor-pointer">Have Account? Sign In</p>
       </Link>
+    <Toaster position='top-right' reverseOrder={false}/>
     </main>
     )
 }
