@@ -2,12 +2,21 @@
 import { FC, useState } from "react";
 import Image from "next/image";
 import { LoginFormProps, RegisterFormProps } from "@/types";
+import { useRegisterMutation } from "@/hooks/useRegisterMutation";
+import { parseAxiosError } from "@/utils/parseAxiosError";
+import toast from 'react-hot-toast';
+import { useRouter } from "next/navigation";
+
 
 interface AuthFormProps {
   type: "login" | "register";
 }
 
 const AuthForm: FC<AuthFormProps> = ({ type }) => {
+
+    const router = useRouter();
+
+    const registerMutation = useRegisterMutation();
 
     const [seePassword, setSeePassword] = useState<boolean>(false);
 
@@ -53,19 +62,32 @@ const AuthForm: FC<AuthFormProps> = ({ type }) => {
 
      const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
+
+        const newValue = name === 'email' ? value.toLowerCase() : value;
+
         if(type === 'login'){
-            setLoginData(prev => ({...prev, [name]: value}));
+            setLoginData(prev => ({...prev, [name]: newValue}));
         }else{
-            setRegisterData(prev => ({...prev, [name]: value}));
+            setRegisterData(prev => ({...prev, [name]: newValue}));
         }
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        const hasErrors = Object.values(errors).some(value => value != undefined && value !== '');
+        if(hasErrors) return;
         if(type === 'login'){
             // Handle login
         }else{
-            // Handle registration
+            registerMutation.mutate(registerData, {
+                onError: (error: unknown) => {
+                  toast.error(parseAxiosError(error));
+                },
+                onSuccess: () => {
+                    router.push('/');
+                    toast.success('Registration successful! You can now log in.');
+                },
+            });
         }
     };
 

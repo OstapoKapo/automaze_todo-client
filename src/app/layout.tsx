@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Montserrat } from "next/font/google";
 import "./globals.css";
 import Header from "./components/layout/header/header";
+import Query from "./components/layout/QueryClient/QueryClient";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,8 +38,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${montserrat.variable} antialiased`}>
-        <Header />
-        {children}
+        <Query>
+          <Header />
+          {children}
+        </Query>
       </body>
     </html>
   );
