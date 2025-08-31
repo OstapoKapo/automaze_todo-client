@@ -38,7 +38,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${montserrat.variable} antialiased`}>
-        <Query>
+         <Query>
           <Header />
           {children}
         </Query>

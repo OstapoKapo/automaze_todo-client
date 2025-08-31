@@ -1,22 +1,23 @@
 'use client'
-import { FC, useState } from "react";
+import { FC, useRef, useState } from "react";
 import Image from "next/image";
-import { LoginFormProps, RegisterFormProps } from "@/types";
+import { AuthFormProps, LoginFormProps, RegisterFormProps } from "@/types";
 import { useRegisterMutation } from "@/hooks/useRegisterMutation";
 import { parseAxiosError } from "@/utils/parseAxiosError";
 import toast from 'react-hot-toast';
 import { useRouter } from "next/navigation";
-
-
-interface AuthFormProps {
-  type: "login" | "register";
-}
+import { useLoginMutation } from "@/hooks/useLoginMutation";
+import ReCAPTCHA from 'react-google-recaptcha';
+import { AxiosError } from "axios";
 
 const AuthForm: FC<AuthFormProps> = ({ type }) => {
 
     const router = useRouter();
 
+    const captchaRef = useRef<ReCAPTCHA>(null);
+    
     const registerMutation = useRegisterMutation();
+    const loginMutation = useLoginMutation();
 
     const [seePassword, setSeePassword] = useState<boolean>(false);
 
@@ -72,22 +73,56 @@ const AuthForm: FC<AuthFormProps> = ({ type }) => {
         }
     };
 
+    const handleRegister = () => {
+        registerMutation.mutate(registerData, {
+            onError: (error: unknown) => {
+                toast.error(parseAxiosError(error));
+            },
+            onSuccess: () => {
+                router.push('/');
+                toast.success('Registration successful! You can now log in.');
+            },
+        });
+    };
+
+    const handleLogin = async () => {
+        const attempts = parseInt(localStorage.getItem('loginAttempts') ?? '0');
+        let captchaToken = null;
+        if (attempts >= 3) {
+            try {
+                if (captchaRef.current) {
+                    captchaToken = await captchaRef.current.executeAsync();
+                    captchaRef.current.reset();
+                }
+            } catch {
+                toast.error('Please complete the CAPTCHA');
+                return;
+            }
+        }
+        loginMutation.mutate({
+            email: loginData.email,
+            password: loginData.password,
+            recaptchaToken: captchaToken
+        }, {
+            onError: (error: unknown) => {
+                if (error instanceof AxiosError) {
+                    const attempts = parseInt(localStorage.getItem('loginAttempts') ?? '0') + 1;
+                    localStorage.setItem('loginAttempts', attempts.toString());
+                    const errorMessage = parseAxiosError(error);
+                    toast.error(errorMessage);
+                }
+            }
+        });
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const hasErrors = Object.values(errors).some(value => value != undefined && value !== '');
         if(hasErrors) return;
         if(type === 'login'){
-            // Handle login
+            handleLogin();
         }else{
-            registerMutation.mutate(registerData, {
-                onError: (error: unknown) => {
-                  toast.error(parseAxiosError(error));
-                },
-                onSuccess: () => {
-                    router.push('/');
-                    toast.success('Registration successful! You can now log in.');
-                },
-            });
+            handleRegister();
         }
     };
 
@@ -123,7 +158,12 @@ const AuthForm: FC<AuthFormProps> = ({ type }) => {
                             </div>
                         }
                     </div>
-                    <button className="transition-[0.4s] w-78 h-12 py-2 mt-5.5 text-xl font-semibold text-white bg-[#AE3698] rounded-lg hover:bg-[#9B2C7A]">LOG IN</button>
+                    <ReCAPTCHA 
+                    sitekey={'6Ldrl7krAAAAAK7oOTGXVG69c5ze_APyGuMwXBmm'}
+                    ref={captchaRef}
+                    size="invisible"
+                    />
+                    <button className="transition-[0.4s] w-78 h-12 py-2 mt-1.5 text-xl font-semibold text-white bg-[#AE3698] rounded-lg hover:bg-[#9B2C7A]">LOG IN</button>
                 </div>
             ) : (
                  <div className="flex flex-col items-center gap-2">
