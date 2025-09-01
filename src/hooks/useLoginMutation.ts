@@ -6,8 +6,6 @@ export const useLoginMutation = () => {
     const router = useRouter();
     return useMutation({
         mutationFn: loginUser,
-        retry: 1,
-        retryDelay: 1000,
         onSuccess: () => {
             router.push("/dashboard");
         },

@@ -10,3 +10,13 @@ export const loginUser = async (data: LoginAPIParams) => {
     const response = await axiosInstance.post('/auth/login', data);
     return response.data;
 }
+
+export const checkAuthSSR = async (cookie: string, csrfToken: string) => {
+  const response = await axiosInstance.get('/auth/me', {
+    headers: {
+      Cookie: cookie,
+      'X-CSRF-Token':  csrfToken || ''
+    },  
+  });
+  return response.data;
+}
