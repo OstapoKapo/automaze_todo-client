@@ -4,6 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 export const useRegisterMutation = () => {
     return useMutation({
         mutationFn: registerUser,
-        retry: false,
+        retry: 2,
+        retryDelay: 500, 
     })
 }
