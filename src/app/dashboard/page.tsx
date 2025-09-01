@@ -11,15 +11,13 @@ const DashboardPage = async () => {
     const authResult = { user: null, error: null };
 
     try {
+        console.log(cookieHeader, csrfToken);
         authResult.user = await checkAuthSSR(cookieHeader, csrfToken);
         console.log(authResult.user);
     } catch (error) {
         console.error('Auth check failed:', error);
     }
 
-    if (!authResult.user) {
-        redirect('/');
-    }
 
     return (
         <div>
