@@ -13,7 +13,6 @@ const DashboardPage = async () => {
     try {
         console.log(cookieHeader, csrfToken);
         authResult.user = await checkAuthSSR(cookieHeader, csrfToken);
-        console.log(authResult.user);
     } catch (error) {
         console.error('Auth check failed:', error);
     }
