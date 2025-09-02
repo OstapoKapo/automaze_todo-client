@@ -27,6 +27,15 @@ export interface RegisterFormProps{
     password: string;
 }
 
+export interface User {
+    id: number;
+    email: string;
+    fullName: string;
+    ip: string;
+    ua: string;
+    createdat: string;
+}
+
 export interface AuthFormProps {
   type: "login" | "register";
 }

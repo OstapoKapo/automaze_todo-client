@@ -1,5 +1,6 @@
 import { LoginAPIParams, RegisterAPIParams } from "@/types";
 import axiosInstance from "@/utils/restApiConfig";
+import axios from "axios";
 
 export const registerUser = async (data: RegisterAPIParams) => {
     const response = await axiosInstance.post('/auth/register', data);
@@ -11,8 +12,13 @@ export const loginUser = async (data: LoginAPIParams) => {
     return response.data;
 }
 
-export const checkAuthSSR = async (cookie: string, csrfToken: string) => {
-  const response = await axiosInstance.get('/auth/me', {
+export const checkAuthCSR = async () => {
+  const response = await axiosInstance.get('/auth/me');
+  return response.data;
+}
+
+export const checkAuthSSR = async (cookie: string, csrfToken: string) => {  
+  const response = await axiosInstance.get(`/auth/me`, {
     headers: {
       Cookie: cookie,
       'X-CSRF-Token':  csrfToken || ''
