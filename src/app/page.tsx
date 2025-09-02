@@ -1,36 +1,31 @@
-import Link from "next/link";
-import AuthForm from "./components/ui/authForm/authForm";
-import { Toaster } from 'react-hot-toast';
-import { redirect } from "next/navigation";
-import { checkAuthSSR } from "@/api/auth";
-import { headers } from "next/headers";
+import AuthContainer from "./components/containers/authContainer/authContainer";
 
+export const metadata = {
+  title: "Login | To-Do App",
+  description: "Sign in to access your dashboard",
+};
 
 const HomePage = async () => {
 
-  const headersList = await headers();
-  const cookieHeader = headersList.get('cookie') ?? '';
-  const csrfToken = headersList.get('X-CSRF-Token') ?? '';
-  const authResult = { user: null, error: null };
-  try {
-    authResult.user = await checkAuthSSR(cookieHeader, csrfToken);
-  } catch (error) {
-     console.error('Auth check failed:', error);
-  }
+  // i want create ssr rendering for quick session check but in vercel i cant use http only cookies in ssr 
 
-  if (authResult.user) {
-      redirect('/dashboard');
-  }
+  // const headersList = await headers();
+  // const cookieHeader = headersList.get('cookie') ?? '';
+  // const csrfToken = headersList.get('X-CSRF-Token') ?? '';
+  const user = null;
+  // try {
+  //   user = await checkAuthSSR(cookieHeader, csrfToken);
+  // } catch (error) {
+  //    console.error('Auth check failed:', error);
+  // }
+
+  // if (user) {
+  //     redirect('/dashboard');
+  // }
 
 
-  return (
-    <main className="bg-[url('/backgrounds/auth-bgc.png')] bg-center bg-cover h-[calc(100vh-72px)] flex w-full justify-center items-center flex-col">
-      <AuthForm type="login" />
-      <Link href="/register">
-        <p className="text-white cursor-pointer">Don't have an account? Sign Up</p>
-      </Link>
-      <Toaster position='top-right' reverseOrder={false}/>
-    </main>
+  return(
+    <AuthContainer initialUser={user} type="login" />
   );
 }
 

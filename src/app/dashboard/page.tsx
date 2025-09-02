@@ -1,28 +1,30 @@
-import { checkAuthSSR } from "@/api/auth";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
+import DashboardContainer from "../components/containers/dashboardContainer/dashboardContainer";
+
+export const metadata = {
+  title: "Dashboard | To-Do App",
+  description: "Your personal dashboard",
+};
 
 const DashboardPage = async () => {
+    
+    // const headersList = await headers();
+    // const cookieHeader = headersList.get('cookie') ?? '';
+    // const csrfToken = headersList.get('X-CSRF-Token') ?? '';
 
-    const headersList = await headers();
-    const cookieHeader = headersList.get('cookie') ?? '';
-    const csrfToken = headersList.get('X-CSRF-Token') ?? '';
 
-    const authResult = { user: null, error: null };
+    // try {
+    //     authResult.user = await checkAuthSSR(cookieHeader, csrfToken);
+    //     console.log(authResult.user);
+    // } catch (error) {
+    //     console.error('Auth check failed:', error);
+    // }
 
-    try {
-        console.log(cookieHeader, csrfToken);
-        authResult.user = await checkAuthSSR(cookieHeader, csrfToken);
-        console.log(authResult.user);
-    } catch (error) {
-        console.error('Auth check failed:', error);
-    }
-
+    // if (!user) {
+    //     redirect('/');
+    // }
 
     return (
-        <div>
-            <h1>Dashboard</h1>
-        </div>
+        <DashboardContainer />
     )
 }
 
